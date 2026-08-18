@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>荷物チェックリスト</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: #f5f5f0; color: #1a1a1a; min-height: 100vh; }
+
+  header { background: #1a1a1a; color: #fff; padding: 20px 16px 16px; position: sticky; top: 0; z-index: 10; }
+  header h1 { font-size: 17px; font-weight: 600; letter-spacing: 0.02em; }
+  .header-sub { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .progress-text { font-size: 12px; color: #aaa; }
+  .progress-bar { height: 3px; background: #333; border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #e8e0d0; border-radius: 2px; transition: width 0.25s ease; }
+  .reset-btn { font-size: 12px; color: #aaa; background: none; border: 1px solid #333; border-radius: 4px; padding: 4px 10px; cursor: pointer; }
+  .reset-btn:active { background: #333; }
+
+  .section { margin: 16px 12px 0; }
+  .section-title { font-size: 11px; font-weight: 600; color: #888; letter-spacing: 0.1em; text-transform: uppercase; padding: 0 4px 8px; }
+  .card { background: #fff; border-radius: 12px; overflow: hidden; }
+
+  .item { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border-bottom: 0.5px solid #f0ede8; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.1s; }
+  .item:last-child { border-bottom: none; }
+  .item:active { background: #fafaf8; }
+
+  .checkbox { width: 24px; height: 24px; border-radius: 7px; border: 1.5px solid #d0cdc8; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; }
+  .item.checked .checkbox { background: #1a1a1a; border-color: #1a1a1a; }
+  .checkmark { display: none; width: 12px; height: 12px; }
+  .item.checked .checkmark { display: block; }
+
+  .item-name { font-size: 15px; color: #1a1a1a; flex: 1; line-height: 1.4; transition: color 0.15s; }
+  .item.checked .item-name { color: #bbb; text-decoration: line-through; text-decoration-color: #ccc; }
+
+  .bottom { height: 40px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>荷物チェックリスト</h1>
+  <div class="header-sub">
+    <span class="progress-text" id="counter">0 / 0 完了</span>
+    <button class="reset-btn" onclick="resetAll()">リセット</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
+</header>
+
+<div class="section">
+  <div class="section-title">洗剤・薬剤</div>
+  <div class="card">
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ケミクール（原液 or 10倍希釈）</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ソリッド（10倍希釈）</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">バスフレッシュ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">バスクール（カビ取りハイター）</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">青アル</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ゴーストキラー</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">クリームクレンザー</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">多目的クレンザー</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">IPA（イソプロピルアルコール）</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ディグリサー</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ステンレスクリーナー</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">EZクリーン</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">スクレイパー・ヘラ類</div>
+  <div class="card">
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ガラススクレイパー</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">スクレイパー（キッチン用）</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">サッシヘラ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">カーボンヘラ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ケレン</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">やすり・パッド・スポンジ類</div>
+  <div class="card">
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">耐水ペーパー（#400）</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">網やすり（耐水）</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">白パッド</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">研磨パッド</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">灰色研磨パッド</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ダイヤモンドパッド</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">食器スポンジ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ガリガリくん（2本）</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">コゲパッド</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">ブラシ類</div>
+  <div class="card">
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ツインブラシ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">緑ブラシ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">金ブラシ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ハケ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">ステンレスブラシ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">大ブラシ</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">その他道具</div>
+  <div class="card">
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">スクイージー</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">サンダー</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">キッチンペーパー</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">色テープ</span></div>
+    <div class="item" onclick="toggle(this)"><div class="checkbox"><svg class="checkmark" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6.5 4.5,9.5 10.5,2.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">一尺脚立</span></div>
+  </div>
+</div>
+
+<div class="bottom"></div>
+
+<script>
+function toggle(item) {
+  item.classList.toggle('checked');
+  update();
+}
+function resetAll() {
+  document.querySelectorAll('.item.checked').forEach(i => i.classList.remove('checked'));
+  update();
+}
+function update() {
+  const all = document.querySelectorAll('.item').length;
+  const done = document.querySelectorAll('.item.checked').length;
+  document.getElementById('counter').textContent = done + ' / ' + all + ' 完了';
+  document.getElementById('pbar').style.width = Math.round(done / all * 100) + '%';
+}
+update();
+</script>
+</body>
+</html>
